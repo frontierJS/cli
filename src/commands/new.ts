@@ -33,9 +33,12 @@ export default class App extends Command {
     let apiDir = dir + "/api";
 
     let actions = [
-      `npx degit frontierjs/spa-template ${spaDir}/spa`,
-      `cd ${spaDir}/spa && npm install`,
-      `echo 'App Created! cd ${spaDir}/spa and npm run dev'`
+      `npx degit frontierjs/spa-template ${spaDir}`,
+      `cd ${spaDir} && npm install`,
+      `echo 'SPA created! cd ${spaDir} and npm run dev'`,
+      `npx degit frontierjs/api-template ${apiDir}`,
+      `cd ${apiDir} && npm install`,
+      `echo 'API created! cd ${apiDir} and npm run dev'`
     ];
 
     /**
