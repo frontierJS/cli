@@ -15,11 +15,11 @@ CLI for Frontier supported apps
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g @frontierjs/frontier
+$ npm install -g @frontierjs/cli
 $ frontier COMMAND
 running command...
 $ frontier (-v|--version|version)
-@frontierjs/frontier/0.0.0-beta.0 linux-x64 node-v8.15.1
+@frontierjs/cli/0.0.0-beta.0 linux-x64 node-v13.0.1
 $ frontier --help [COMMAND]
 USAGE
   $ frontier COMMAND
@@ -28,28 +28,8 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`frontier app [DIR]`](#frontier-app-dir)
 * [`frontier help [COMMAND]`](#frontier-help-command)
-* [`frontier new [FILE]`](#frontier-new-file)
-
-## `frontier app [DIR]`
-
-Creates a new frontier app
-
-```
-USAGE
-  $ frontier app [DIR]
-
-OPTIONS
-  -d, --dry   Print actions that will be executed
-  -h, --help  show CLI help
-
-EXAMPLE
-  $ frontier app my-new-project
-  Creating new app!
-```
-
-_See code: [src/commands/app.ts](https://github.com/jdkdev/frontier-cli/blob/v0.0.0-beta.0/src/commands/app.ts)_
+* [`frontier new [DIR]`](#frontier-new-dir)
 
 ## `frontier help [COMMAND]`
 
@@ -68,23 +48,22 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
 
-## `frontier new [FILE]`
+## `frontier new [DIR]`
 
-describe the command here
+Creates a new frontier app
 
 ```
 USAGE
-  $ frontier new [FILE]
+  $ frontier new [DIR]
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -d, --dry   Displays actions that will be run but will not execute them
+  -h, --help  show CLI help
 
 EXAMPLE
-  $ frontier hello
-  hello world from ./src/hello.ts!
+  $ frontier new my-new-app
+       Creating new frontier structured app!
 ```
 
-_See code: [src/commands/new.ts](https://github.com/jdkdev/frontier-cli/blob/v0.0.0-beta.0/src/commands/new.ts)_
+_See code: [src/commands/new.ts](https://github.com/frontierjs/frontier/blob/v0.0.0-beta.0/src/commands/new.ts)_
 <!-- commandsstop -->

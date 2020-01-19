@@ -38,7 +38,7 @@ export default class App extends Command {
       `echo 'SPA created! cd ${spaDir} and npm run dev'`,
       `npx degit frontierjs/api-template ${apiDir}`,
       `cd ${apiDir} && npm install`,
-      `echo 'API created! cd ${apiDir} and npm run dev'`
+      `echo 'API created! cd ${apiDir} and then mv .example-env over to .env and npm run dev'`
     ];
 
     /**
