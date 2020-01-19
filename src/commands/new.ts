@@ -35,11 +35,14 @@ export default class App extends Command {
     let actions = [
       `npx degit frontierjs/spa-template ${spaDir}`,
       `cd ${spaDir} && npm install`,
+      `mv ${spaDir}/.env-example.js ${spaDir}/.env.js`,
       `echo 'SPA created! cd ${spaDir} and npm run dev'`,
       `npx degit frontierjs/api-template ${apiDir}`,
       `echo The API uses a version of sqlite that compiles the binaries...this will take 30 seconds`,
       `cd ${apiDir} && npm install`,
-      `echo 'API created! cd ${apiDir} and then mv .example-env over to .env and npm run dev'`
+      `mv ${apiDir}/.env-example ${apiDir}/.env`,
+      `echo 'Currenting use memory DB, set path to sqlite file in .env file'`,
+      `echo 'API created! cd ${apiDir} and npm run dev'`
     ];
 
     /**
