@@ -2,11 +2,11 @@ import { execSync } from "child_process";
 import { Command, flags } from "@oclif/command";
 
 export default class New extends Command {
-  static description = "Creates a new frontier app";
+  static description = "Creates a new frontier spa-app";
 
   static examples = [
-    `$ frontier new my-new-app
-    Creating new frontier structured app!
+    `$ frontier new spa-app
+    Creating new frontier structured spa!
     `
   ];
 
@@ -29,20 +29,14 @@ export default class New extends Command {
     if (!dir) {
       return this.log(`A project name is required to make app directory`);
     }
+
     let spaDir = dir + "/spa";
-    let apiDir = dir + "/api";
 
     let actions = [
       `npx degit frontierjs/spa-template ${spaDir}`,
       `cd ${spaDir} && npm install`,
       `cp ${spaDir}/.env-example.js ${spaDir}/.env.js`,
       `echo 'SPA created! cd ${spaDir} and npm run dev'`,
-      `npx degit frontierjs/api-template ${apiDir}`,
-      `echo The API uses a version of sqlite that compiles the binaries...this will take 30 seconds`,
-      `cd ${apiDir} && npm install`,
-      `cp ${apiDir}/.env-example ${apiDir}/.env`,
-      `echo 'Currenting use memory DB, set path to sqlite file in .env file'`,
-      `echo 'API created! cd ${apiDir} and npm run dev'`
     ];
 
     /**
