@@ -89,7 +89,7 @@ export default class Site extends Command {
       }
 
       this.log(action);
-      // if (!dry) execSync(action);
+       if (!dry) execSync(action);
     });
   }
 }

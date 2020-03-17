@@ -53,6 +53,7 @@ export default class Deploy extends Command {
       // `echo 'Restarting App'`,
       // `ssh ${SERVER} pm2 start ${app}`
     ];
+    actions.push(`echo 'Deploy SPA done'`);
     let actionsApi = [
       `echo 'Packaging API'`,
       `NAME=${app} npm run pack`,
@@ -71,7 +72,7 @@ export default class Deploy extends Command {
       //  1169  pm2 ps
     ];
 
-    actions.push(`echo 'Deploy SPA done'`);
+    actions.push(`echo 'Deploy API done'`);
 
     /**
      * Run through actions checking for errors

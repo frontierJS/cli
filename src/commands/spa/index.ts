@@ -1,7 +1,7 @@
 import { execSync } from "child_process";
 import { Command, flags } from "@oclif/command";
 
-export default class New extends Command {
+export default class Spa extends Command {
   static description = "Creates a new frontier spa-app";
 
   static examples = [
@@ -24,7 +24,7 @@ export default class New extends Command {
     const {
       args: { dir },
       flags: { dry }
-    } = this.parse(New);
+    } = this.parse(Spa);
 
     if (!dir) {
       return this.log(`A project name is required to make app directory`);
