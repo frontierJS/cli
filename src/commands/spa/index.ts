@@ -30,7 +30,7 @@ export default class Spa extends Command {
       return this.log(`A project name is required to make app directory`);
     }
 
-    let spaDir = dir + "/spa";
+    let spaDir = dir;
 
     let actions = [
       `npx degit frontierjs/spa-template ${spaDir}`,
