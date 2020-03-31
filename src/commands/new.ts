@@ -39,9 +39,10 @@ export default class New extends Command {
       `echo 'SPA created! cd ${spaDir} and npm run dev'`,
       `npx degit frontierjs/api-template ${apiDir}`,
       `echo The API uses a version of sqlite that compiles the binaries...this will take 30 seconds`,
-      `cd ${apiDir} && npm install`,
       `cp ${apiDir}/.env-example ${apiDir}/.env`,
       `echo 'Currenting use memory DB, set path to sqlite file in .env file'`,
+      "sleep 5",
+      `(cd ${apiDir} && npm install)`,
       `echo 'API created! cd ${apiDir} and npm run dev'`
     ];
 
