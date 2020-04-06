@@ -8,7 +8,9 @@ export default class Deploy extends Command {
   static description = "Deploys a site to remote server";
 
   static examples = [
-    `$ frontier deploy
+    `$ frontier deploy demo -s
+    -a --api //api 
+    -s --spa //spa
     `
   ];
 
@@ -17,6 +19,14 @@ export default class Deploy extends Command {
     dry: flags.boolean({
       char: "d",
       description: "Displays actions that will be run but will not execute them"
+    }),
+    api: flags.boolean({
+      char: "a",
+      description: "Deploy the API"
+    }),
+    spa: flags.boolean({
+      char: "s",
+      description: "Deploy the SPA"
     })
   };
 
@@ -31,7 +41,7 @@ export default class Deploy extends Command {
   async run() {
     const {
       args: { app },
-      flags: { dry }
+      flags: { dry, api, spa }
     } = this.parse(Deploy);
 
     const SERVER = env.get("SERVER", "notset");
@@ -39,40 +49,46 @@ export default class Deploy extends Command {
     const domain = env.get("DOMAIN");
 
     const site = app + "." + domain;
-    const file = app + "-spa.tar.gz";
+    const spaFile = app + "-spa.tar.gz";
+    const apiFile = app + "-api.tar.gz";
 
-    let actions = [
-      `echo 'Packaging SPA'`,
-      `NAME=${app} npm run pack`,
-      `echo 'Transfering spa to server'`,
-      `scp ${file} ${SERVER}:${tmploc}`,
-      // `echo 'Pausing app'`,
-      // `ssh ${SERVER} pm2 stop ${app}`,
-      `echo 'unziping file'`,
-      `ssh ${SERVER} "tar xvf ${tmploc}/${file} -C /home/forge/${site}/dist"`
-      // `echo 'Restarting App'`,
-      // `ssh ${SERVER} pm2 start ${app}`
-    ];
-    actions.push(`echo 'Deploy SPA done'`);
-    let actionsApi = [
-      `echo 'Packaging API'`,
-      `NAME=${app} npm run pack`,
-      `echo 'Transfering API to server'`,
-      //  1135  mv auth.env auth.knight.works/.env
-      `scp ${file} ${SERVER}:${tmploc}`,
-      // `echo 'Pausing app'`,
-      // `ssh ${SERVER} pm2 stop ${app}`,
-      `echo 'unziping file'`,
-      `ssh ${SERVER} "tar xvf ${tmploc}/${file} -C /home/forge/${site}/dist"`
-      // `echo 'Running NPM install'`,
-      //  1149  npm install
-      // `echo 'Restarting App'`,
-      // `ssh ${SERVER} pm2 start ${app}`
-      // `echo 'Print status'`,
-      //  1169  pm2 ps
-    ];
+    let actions = [];
 
-    actions.push(`echo 'Deploy API done'`);
+    if (spa) {
+      let actionsSpa = [
+        `echo 'Packaging SPA'`,
+        `NAME=${app} npm run pack`,
+        `echo 'Transfering spa to server'`,
+        `scp ${spaFile} ${SERVER}:${tmploc}`,
+        `echo 'unziping file'`,
+        `ssh ${SERVER} "tar xvf ${tmploc}/${spaFile} -C /home/forge/${site}/dist"`
+      ];
+
+      actions.push(...actionsSpa);
+      actions.push(`echo 'Deploy SPA done'`);
+    }
+
+    if (api) {
+      let actionsApi = [
+        `echo 'Packaging API'`,
+        `NAME=${app} npm run pack`,
+        `echo 'Transfering API to server'`,
+        `scp ${apiFile} ${SERVER}:${tmploc}`,
+        `echo 'Pausing app'`,
+        `ssh ${SERVER} "pm2 stop ${site}"`,
+        `echo 'unziping file'`,
+        `ssh ${SERVER} "tar xvf ${tmploc}/${apiFile} -C /home/forge/${site}"`,
+        `echo 'Running NPM install'`,
+        `ssh ${SERVER} "cd /home/forge/${site} && npm install"`,
+        `echo 'Restarting App'`,
+        `ssh ${SERVER} "pm2 restart ${site} -a"`,
+        `echo 'Print status'`,
+        `ssh ${SERVER} "pm2 ps"`
+      ];
+
+      actions.push(...actionsApi);
+      actions.push(`echo 'Deploy API done'`);
+    }
 
     /**
      * Run through actions checking for errors

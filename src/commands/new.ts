@@ -36,13 +36,18 @@ export default class New extends Command {
       `npx degit frontierjs/spa-template ${spaDir}`,
       `cd ${spaDir} && npm install`,
       `cp ${spaDir}/.env-example.js ${spaDir}/.env.js`,
+      // `cd ${spaDir} && git init`,
+      // `echo 'if using github -- hub create account/project-name'`,
+      // `echo 'then git push -u origin master'`,
       `echo 'SPA created! cd ${spaDir} and npm run dev'`,
       `npx degit frontierjs/api-template ${apiDir}`,
       `echo The API uses a version of sqlite that compiles the binaries...this will take 30 seconds`,
       `cp ${apiDir}/.env-example ${apiDir}/.env`,
+      // `cd ${apiDir} && git init`,
+      // `echo 'if using github -- hub create account/project-name'`,
+      // `echo 'then git push -u origin master'`,
       `echo 'Currenting use memory DB, set path to sqlite file in .env file'`,
-      "sleep 5",
-      `(cd ${apiDir} && npm install)`,
+      `echo "cd ${apiDir} && npm install"`,
       `echo 'API created! cd ${apiDir} and npm run dev'`
     ];
 

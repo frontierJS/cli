@@ -7,11 +7,13 @@ const env = Toolbelt.env;
 
 export default class Site extends Command {
   static description = `Creates a new nginx conf and dir for site on remote server
-      Uses SITE_NAME and DOMAIN in api/.env
+      Uses SITE_NAME and DOMAIN in .env or api/.env
     `;
 
   static examples = [
     `$ frontier site
+    creates SITE_NAME.DOMAIN directory on server
+    example.mydomain.com
     `
   ];
 
@@ -20,6 +22,14 @@ export default class Site extends Command {
     dry: flags.boolean({
       char: "d",
       description: "Displays actions that will be run but will not execute them"
+    }),
+    api: flags.boolean({
+      char: "a",
+      description: "Creates a placeholder for api using a template api file"
+    }),
+    excludeDb: flags.boolean({
+      char: "e",
+      description: "Excludes creation of sqlite database on server"
     })
   };
 
@@ -27,7 +37,7 @@ export default class Site extends Command {
 
   async run() {
     const {
-      flags: { dry }
+      flags: { dry, excludeDb, api }
     } = this.parse(Site);
 
     const domain = env.get("DOMAIN", "notset: DOMAIN");
@@ -68,11 +78,32 @@ export default class Site extends Command {
       `ssh ${SERVER} sudo service nginx restart`
     ];
 
+    if (api) {
+      let actionsApi = [
+        `echo '******Creating API placeholder'`,
+        `ssh ${SERVER} "tar xvf ${tmploc}/template-api.tar.gz -C /home/forge/${site}"`,
+        `ssh ${SERVER} "cp ${tmploc}/.env-example /home/forge/${site}/.env"`,
+        `echo 'Running NPM install'`,
+        `ssh ${SERVER} "cd /home/forge/${site} && npm install"`,
+        `echo 'Starting Api'`,
+        `ssh ${SERVER} "pm2 start api.js --name ${site} -a"`,
+        `echo 'Print status'`,
+        `ssh ${SERVER} "pm2 ps"`
+      ];
+      actions.push(...actionsApi);
+      if (!excludeDb) {
+        actions.push(`ssh ${SERVER} mkdir -p /home/forge/db/${site}`);
+        actions.push(
+          `ssh ${SERVER} cp /home/forge/db/template/db.sqlite /home/forge/db/${site}`
+        );
+      }
+    }
+
     // Cloudflare Step
     const SERVER_IP = env.get("SERVER_IP", "notset");
     if (app && SERVER_IP) {
-      actions.push(`echo Creating alias in Cloudflare`);
-      actions.push(`cfcli -a -t A add ${app} ${SERVER_IP}`);
+      actions.push(`echo To create alias in Cloudflare`);
+      actions.push(`echo "cfcli -a -t A add ${app} ${SERVER_IP}"`);
     }
 
     actions.push(`echo 'Site Creation done'`);
@@ -89,7 +120,7 @@ export default class Site extends Command {
       }
 
       this.log(action);
-       if (!dry) execSync(action);
+      if (!dry) execSync(action);
     });
   }
 }
