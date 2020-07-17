@@ -14,30 +14,31 @@ export default class Site extends Command {
     `$ frontier site
     creates SITE_NAME.DOMAIN directory on server
     example.mydomain.com
-    `
+    `,
   ];
 
   static flags = {
     help: flags.help({ char: "h" }),
     dry: flags.boolean({
       char: "d",
-      description: "Displays actions that will be run but will not execute them"
+      description:
+        "Displays actions that will be run but will not execute them",
     }),
     api: flags.boolean({
       char: "a",
-      description: "Creates a placeholder for api using a template api file"
+      description: "Creates a placeholder for api using a template api file",
     }),
     excludeDb: flags.boolean({
       char: "e",
-      description: "Excludes creation of sqlite database on server"
-    })
+      description: "Excludes creation of sqlite database on server",
+    }),
   };
 
   static args = [];
 
   async run() {
     const {
-      flags: { dry, excludeDb, api }
+      flags: { dry, excludeDb, api },
     } = this.parse(Site);
 
     const domain = env.get("DOMAIN", "notset: DOMAIN");
@@ -75,7 +76,7 @@ export default class Site extends Command {
       `scp ${file} ${SERVER}:${tmploc}/${serverFile}`,
       `ssh ${SERVER} sudo mv ${tmploc}/${serverFile} /etc/nginx/sites-available`,
       `ssh ${SERVER} sudo ln -s /etc/nginx/sites-available/${serverFile} /etc/nginx/sites-enabled/${serverFile}`,
-      `ssh ${SERVER} sudo service nginx restart`
+      `ssh ${SERVER} sudo service nginx restart`,
     ];
 
     if (api) {
@@ -86,9 +87,9 @@ export default class Site extends Command {
         `echo 'Running NPM install'`,
         `ssh ${SERVER} "cd /home/forge/${site} && npm install"`,
         `echo 'Starting Api'`,
-        `ssh ${SERVER} "pm2 start api.js --name ${site} -a"`,
+        `ssh ${SERVER} "pm2 start /home/forge/${site}/api.js --name ${site} -a"`,
         `echo 'Print status'`,
-        `ssh ${SERVER} "pm2 ps"`
+        `ssh ${SERVER} "pm2 ps"`,
       ];
       actions.push(...actionsApi);
       if (!excludeDb) {
@@ -111,7 +112,7 @@ export default class Site extends Command {
     /**
      * Run through actions checking for errors
      */
-    actions.forEach(action => {
+    actions.forEach((action) => {
       // this.log(process.env);
       if (action.includes("notset")) {
         this.warn("Cannot run this command");
